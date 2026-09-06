@@ -115,6 +115,25 @@ def resolve_audio_file(
     return meta, _data_path(audio_id, meta.extension)
 
 
+def read_audio_bytes(
+    audio_id: str,
+    *,
+    request_id: str | None = None,
+    stage: str = "asr",
+) -> tuple[AudioMeta, bytes]:
+    meta, path = resolve_audio_file(audio_id, request_id=request_id, stage=stage)
+    try:
+        return meta, path.read_bytes()
+    except OSError as exc:
+        raise AppError(
+            status_code=404,
+            code="AUDIO_NOT_FOUND",
+            message="录音不存在或已过期，请重新上传。",
+            stage=stage,
+            request_id=request_id,
+        ) from exc
+
+
 def cleanup_expired_audio() -> int:
     """Remove expired temp audio. Does not replace read-time expiry checks."""
     settings = get_settings()
