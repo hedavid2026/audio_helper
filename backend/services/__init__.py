@@ -1,1 +1,1 @@
-"""External service clients and business algorithms (implemented in later rounds)."""
+"""External service clients, probing, and persistence helpers."""

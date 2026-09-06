@@ -32,9 +32,20 @@ class Settings(BaseSettings):
     host: str = "0.0.0.0"
     port: int = 8003
 
+    storage_dir: str = str(_BACKEND_DIR / "storage")
+    audio_ttl_hours: int = 24
+    max_audio_bytes: int = 5 * 1024 * 1024
+    min_audio_duration_sec: float = 1.0
+    max_audio_duration_sec: float = 60.0
+    ffprobe_path: str = "ffprobe"
+
     @property
     def cors_origin_list(self) -> list[str]:
         return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]
+
+    @property
+    def audio_storage_dir(self) -> Path:
+        return Path(self.storage_dir) / "audio"
 
 
 @lru_cache

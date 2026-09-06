@@ -1,8 +1,22 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+import logging
 
+from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+
+from api import new_request_id
 from api.health import router as health_router
+from api.upload import router as upload_router
 from config import get_settings
+from schemas import AppError, ErrorDetail, ErrorResponse
+from services.audio_store import cleanup_expired_audio, ensure_audio_storage
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s [%(name)s] %(message)s",
+)
+logger = logging.getLogger(__name__)
 
 settings = get_settings()
 
@@ -17,3 +31,38 @@ app.add_middleware(
 )
 
 app.include_router(health_router)
+app.include_router(upload_router)
+
+
+@app.on_event("startup")
+def on_startup() -> None:
+    ensure_audio_storage()
+    removed = cleanup_expired_audio()
+    logger.info("startup_audio_cleanup removed=%s", removed)
+
+
+@app.exception_handler(AppError)
+async def app_error_handler(_request: Request, exc: AppError) -> JSONResponse:
+    request_id = exc.request_id or new_request_id()
+    body = ErrorResponse(
+        request_id=request_id,
+        error=ErrorDetail(code=exc.code, message=exc.message, stage=exc.stage),
+    )
+    return JSONResponse(status_code=exc.status_code, content=body.model_dump())
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_error_handler(
+    _request: Request, exc: RequestValidationError
+) -> JSONResponse:
+    request_id = new_request_id()
+    logger.info("validation_error request_id=%s detail=%s", request_id, exc.errors())
+    body = ErrorResponse(
+        request_id=request_id,
+        error=ErrorDetail(
+            code="MISSING_FIELD",
+            message="请求参数不正确，请检查是否使用字段名 file 上传文件。",
+            stage="upload",
+        ),
+    )
+    return JSONResponse(status_code=422, content=body.model_dump())

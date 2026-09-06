@@ -28,14 +28,110 @@ body {
   font-size: 1.75rem;
 }
 
-.app p {
-  margin: 0 0 8px;
+.app > p {
+  margin: 0 0 20px;
   color: #44515f;
 }
 
-.hint {
-  margin-top: 24px;
-  padding: 12px 14px;
-  background: #e8eef5;
-  border-left: 3px solid #3b6ea5;
+.city-select {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.city-select span {
+  color: #44515f;
+}
+
+.city-select select {
+  min-width: 140px;
+  padding: 8px 10px;
+  border: 1px solid #c5d0db;
+  border-radius: 6px;
+  background: #fff;
+  font: inherit;
+}
+
+.record-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.record-hint {
+  margin: 0;
+  color: #44515f;
+}
+
+.record-button {
+  min-width: 180px;
+  min-height: 180px;
+  border: none;
+  border-radius: 50%;
+  background: #2f6fed;
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  touch-action: none;
+  box-shadow: 0 10px 24px rgba(47, 111, 237, 0.28);
+}
+
+.record-button:disabled {
+  background: #9aa8b8;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.record-button.recording {
+  background: #d94848;
+  box-shadow: 0 10px 24px rgba(217, 72, 72, 0.28);
+}
+
+.cancel-button {
+  padding: 8px 14px;
+  border: 1px solid #c5d0db;
+  border-radius: 6px;
+  background: #fff;
+  color: #44515f;
+  font: inherit;
+  cursor: pointer;
+}
+
+.status {
+  margin: 0;
+}
+
+.status.muted {
+  color: #6b7785;
+  font-size: 0.95rem;
+}
+
+.status.error {
+  color: #b42318;
+}
+
+.clip-panel {
+  width: 100%;
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid #d7e0ea;
+}
+
+.clip-panel h2 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+}
+
+.clip-panel audio {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+}
+
+.clip-panel a {
+  color: #2f6fed;
 }
