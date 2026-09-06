@@ -1,0 +1,41 @@
+:root {
+  color: #1a2330;
+  background: #f3f6f9;
+  font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  line-height: 1.5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.app {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 24px;
+}
+
+.app h1 {
+  margin: 0 0 12px;
+  font-size: 1.75rem;
+}
+
+.app p {
+  margin: 0 0 8px;
+  color: #44515f;
+}
+
+.hint {
+  margin-top: 24px;
+  padding: 12px 14px;
+  background: #e8eef5;
+  border-left: 3px solid #3b6ea5;
+}
