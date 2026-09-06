@@ -1,4 +1,3 @@
-from functools import lru_cache
 from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -39,6 +38,13 @@ class Settings(BaseSettings):
     max_audio_duration_sec: float = 60.0
     ffprobe_path: str = "ffprobe"
 
+    # Official qwen3-asr-flash Base64 input limit is 10MB after encoding.
+    asr_max_base64_bytes: int = 10 * 1024 * 1024
+    asr_timeout_sec: float = 20.0
+    asr_enable_itn: bool = False
+
+    extract_timeout_sec: float = 15.0
+
     @property
     def cors_origin_list(self) -> list[str]:
         return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]
@@ -48,6 +54,7 @@ class Settings(BaseSettings):
         return Path(self.storage_dir) / "audio"
 
 
-@lru_cache
 def get_settings() -> Settings:
+    # No process-wide cache so updating backend/.env takes effect after restart
+    # without surprising stale empty API keys during local development.
     return Settings()
